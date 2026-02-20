@@ -1,0 +1,22 @@
+# Build outputs
+**/bin/
+**/obj/
+**/TestResults/
+
+# Environment and secrets
+.env
+browserstack.yml
+
+# IDE
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Playwright
+.playwright/
