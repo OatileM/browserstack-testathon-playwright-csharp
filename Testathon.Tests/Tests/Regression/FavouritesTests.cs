@@ -42,6 +42,13 @@ public class FavouritesTests : TestBase
         await _homePage.ClickFavouritesLink();
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
+        // If redirected to signin, authenticate and wait for redirect
+        if (Page.Url.Contains("signin"))
+        {
+            await _signInPage.Login("demouser", "testingisfun99");
+            await Page.WaitForURLAsync(url => url.Contains("/favourites"), new() { Timeout = 5000 }).ContinueWith(_ => Task.CompletedTask);
+        }
+
         // Verify at favourites page
         var isAtFavourites = await _favouritesPage.IsAtFavourites();
         Assert.That(isAtFavourites, Is.True, "Must be at favourites page");
