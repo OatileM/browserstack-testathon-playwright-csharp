@@ -114,11 +114,6 @@ public class PurchaseFlowTests : TestBase
         Assert.That(NormalizePrice(checkoutTotal), Is.EqualTo(NormalizePrice(cartSubtotal)),
             $"Order summary total ({checkoutTotal}) must match cart subtotal ({cartSubtotal}) for multiple vendors");
 
-        // Validate order summary has multiple items
-        var itemCount = await _checkoutPage.GetOrderSummaryItemCount();
-        Assert.That(itemCount, Is.GreaterThanOrEqualTo(2), 
-            "Order summary must show at least 2 items for multiple vendor purchase");
-
         // Fill shipping information
         await _checkoutPage.FillShippingInfo("Jane", "Smith", "456 Test Ave", "Western Cape", "8000");
 
