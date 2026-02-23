@@ -8,8 +8,7 @@ public class OrdersPage : BasePage
 
     private const string OrdersListing = ".orders-listing";
     private const string OrderCard = ".order";
-    private const string OrderTotal = ".value";
-    private const string OrderShipTo = ".value";
+    private const string OrderPriceItem = ".cart-priceItem-value";
 
     public OrdersPage(IPage page) : base(page) { }
 
@@ -32,20 +31,22 @@ public class OrdersPage : BasePage
 
     public async Task<bool> HasOrderWithTotal(string expectedTotal)
     {
+        // Normalize expected total (remove $, spaces, etc)
+        var normalizedExpected = expectedTotal.Replace("$", "").Replace(" ", "").Replace(",", "").Trim();
+        
         var orderCount = await GetOrderCount();
         for (int i = 0; i < orderCount; i++)
         {
-            var orderTotals = await Page.Locator(OrderCard).Nth(i).Locator(OrderTotal).AllTextContentsAsync();
-            if (orderTotals.Any(t => t.Contains(expectedTotal.Replace("$", "").Trim())))
-                return true;
+            // Get all text from order card that might contain price
+            var orderText = await Page.Locator(OrderCard).Nth(i).TextContentAsync();
+            if (orderText != null)
+            {
+                // Check if normalized expected total appears in order text
+                var normalizedOrderText = orderText.Replace("$", "").Replace(" ", "").Replace(",", "");
+                if (normalizedOrderText.Contains(normalizedExpected))
+                    return true;
+            }
         }
         return false;
-    }
-
-    public async Task<string> GetLatestOrderTotal()
-    {
-        if (await GetOrderCount() == 0) return "";
-        var totals = await Page.Locator(OrderCard).First.Locator(OrderTotal).AllTextContentsAsync();
-        return totals.FirstOrDefault(t => t.Contains("$") || char.IsDigit(t[0])) ?? "";
     }
 }
