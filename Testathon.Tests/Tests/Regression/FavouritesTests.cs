@@ -22,13 +22,12 @@ public class FavouritesTests : TestBase
     }
 
     [Test]
-    [Description("TC-REG-FAV-01: Click favourite button and verify favourites page is accessible")]
+    [Description("TC-REG-FAV-01: Add product to favourites and verify it appears in favourites page - EXPOSES BUG: Favourites don't persist")]
     public async Task TC_REG_FAV_01_Add_Product_To_Favourites_And_Verify()
     {
-        // Authenticate first (required for favourites)
-        await _signInPage.Navigate();
+        // Start on home page, then sign in
+        await Page.Locator("text=Sign In").ClickAsync();
         await _signInPage.Login("demouser", "testingisfun99");
-        await _homePage.Navigate();
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
         // Get product title before adding to favourites
@@ -37,29 +36,23 @@ public class FavouritesTests : TestBase
 
         // Click favourite button on first product
         await _homePage.ClickFavouriteByIndex(0);
-        await Page.WaitForTimeoutAsync(1000);
+        await Page.WaitForTimeoutAsync(500);
 
-        // Navigate directly to favourites URL
+        // Navigate to favourites using direct URL
         await _favouritesPage.Navigate();
 
         // Verify at favourites page
         var isAtFavourites = await _favouritesPage.IsAtFavourites();
-        Assert.That(isAtFavourites, Is.True, "Must be at favourites page after authentication");
+        Assert.That(isAtFavourites, Is.True, "Must be at favourites page");
 
-        // Check if favourites exist (may be 0 if feature doesn't persist or has a bug)
+        // Verify at least one favourite exists - THIS WILL FAIL DUE TO BUG
         var favouriteCount = await _favouritesPage.GetFavouriteCount();
-        
-        if (favouriteCount > 0)
-        {
-            // If favourites exist, verify the product we favourited is there
-            var hasFavourite = await _favouritesPage.HasProductWithTitle(productTitle);
-            Assert.That(hasFavourite, Is.True, 
-                $"Favourites page should contain product '{productTitle}' that was favourited");
-        }
-        else
-        {
-            // Document that favourites don't persist (potential bug)
-            Assert.Warn($"Favourites page is empty after clicking favourite button on '{productTitle}'. Favourites may not persist or require additional action.");
-        }
+        Assert.That(favouriteCount, Is.GreaterThan(0), 
+            $"BUG: Favourites page is empty after clicking favourite on '{productTitle}'. Favourites don't persist.");
+
+        // Verify favourited product appears in list
+        var hasFavourite = await _favouritesPage.HasProductWithTitle(productTitle);
+        Assert.That(hasFavourite, Is.True, 
+            $"Favourites page must contain product '{productTitle}'");
     }
 }
