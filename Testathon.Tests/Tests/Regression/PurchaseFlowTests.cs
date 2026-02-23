@@ -88,7 +88,8 @@ public class PurchaseFlowTests : TestBase
         await _homePage.AddToCartByIndex(0);
         await _homePage.CloseCart();
 
-        // Add Samsung product
+        // Clear Apple filter and select Samsung
+        await Page.Locator("input[type='checkbox'][value='Apple']").UncheckAsync();
         await _homePage.SelectVendorByValue("Samsung");
         await _homePage.AddToCartByIndex(0);
         await _homePage.OpenCart();
