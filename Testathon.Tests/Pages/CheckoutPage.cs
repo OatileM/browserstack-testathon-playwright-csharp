@@ -86,8 +86,10 @@ public class CheckoutPage : BasePage
         try
         {
             // Order number is in text like "Your order number is 23."
-            var confirmationText = await Page.Locator(ConfirmationMessage).Locator("xpath=following-sibling::div").First.TextContentAsync(new() { Timeout = 5000 });
-            var match = System.Text.RegularExpressions.Regex.Match(confirmationText ?? "", @"order number is\s+(\d+)");
+            // It's in the parent div, after the legend element
+            var parentDiv = Page.Locator(ConfirmationMessage).Locator("xpath=..");
+            var orderText = await parentDiv.Locator("div").First.TextContentAsync(new() { Timeout = 5000 });
+            var match = System.Text.RegularExpressions.Regex.Match(orderText ?? "", @"order number is\s+(\d+)", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
             return match.Success ? match.Groups[1].Value : "";
         }
         catch
