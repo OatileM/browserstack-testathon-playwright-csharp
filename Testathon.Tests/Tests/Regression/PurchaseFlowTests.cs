@@ -89,9 +89,11 @@ public class PurchaseFlowTests : TestBase
         await _homePage.CloseCart();
 
         // Clear Apple filter and select Samsung
-        await Page.Locator("input[type='checkbox'][value='Apple']").UncheckAsync();
+        await Page.Locator("input[type='checkbox'][value='Apple']").UncheckAsync(new() { Force = true });
+        await Page.WaitForTimeoutAsync(500);
         await _homePage.SelectVendorByValue("Samsung");
         await _homePage.AddToCartByIndex(0);
+        await _homePage.CloseCart();
         await _homePage.OpenCart();
         var cartSubtotal = await _homePage.GetSubtotal();
         await _homePage.CloseCart();
