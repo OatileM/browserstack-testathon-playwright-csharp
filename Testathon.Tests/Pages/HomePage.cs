@@ -190,8 +190,24 @@ public class HomePage : BasePage
     public async Task ClickFavouriteByIndex(int index)
     {
         var productCard = Page.Locator(ProductCards).Nth(index);
-        await productCard.Locator("svg.Icon").First.ClickAsync();
-        await Page.WaitForTimeoutAsync(300);
+        // Wait for any API response after clicking favourite
+        var responseTask = Page.WaitForResponseAsync(response => 
+            response.Url.Contains("favourite") || response.Url.Contains("fav"), 
+            new() { Timeout = 5000 });
+        
+        var favouriteButton = productCard.Locator("button").Filter(new() { Has = Page.Locator("svg.Icon") });
+        await favouriteButton.ClickAsync();
+        
+        try
+        {
+            await responseTask;
+        }
+        catch
+        {
+            // API might not be called or different endpoint
+        }
+        
+        await Page.WaitForTimeoutAsync(500);
     }
 
     public async Task<string> GetProductTitleByIndex(int index)

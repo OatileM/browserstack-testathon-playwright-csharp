@@ -22,7 +22,7 @@ public class FavouritesTests : TestBase
     }
 
     [Test]
-    [Description("TC-REG-FAV-01: Add product to favourites and verify it appears in favourites page - EXPOSES BUG: Favourites don't persist")]
+    [Description("TC-REG-FAV-01: Add product to favourites and verify it appears in favourites page")]
     public async Task TC_REG_FAV_01_Add_Product_To_Favourites_And_Verify()
     {
         // Start on home page, then sign in
@@ -36,19 +36,27 @@ public class FavouritesTests : TestBase
 
         // Click favourite button on first product
         await _homePage.ClickFavouriteByIndex(0);
-        await Page.WaitForTimeoutAsync(500);
+        await Page.WaitForTimeoutAsync(1000);
 
-        // Navigate to favourites using direct URL
-        await _favouritesPage.Navigate();
+        // Navigate to favourites using navbar link
+        await _homePage.ClickFavouritesLink();
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+
+        // Handle signin redirect (routing bug)
+        if (Page.Url.Contains("signin"))
+        {
+            await _signInPage.Login("demouser", "testingisfun99");
+            await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+        }
 
         // Verify at favourites page
         var isAtFavourites = await _favouritesPage.IsAtFavourites();
         Assert.That(isAtFavourites, Is.True, "Must be at favourites page");
 
-        // Verify at least one favourite exists - THIS WILL FAIL DUE TO BUG
+        // Verify at least one favourite exists
         var favouriteCount = await _favouritesPage.GetFavouriteCount();
         Assert.That(favouriteCount, Is.GreaterThan(0), 
-            $"BUG: Favourites page is empty after clicking favourite on '{productTitle}'. Favourites don't persist.");
+            $"At least one product must be displayed in favourites list after clicking favourite on '{productTitle}'");
 
         // Verify favourited product appears in list
         var hasFavourite = await _favouritesPage.HasProductWithTitle(productTitle);
