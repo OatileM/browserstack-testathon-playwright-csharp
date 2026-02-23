@@ -72,6 +72,12 @@ public class CheckoutPage : BasePage
     {
         await Click(SubmitButton);
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+    }
+
+    public async Task SubmitOrderAndWaitForConfirmation()
+    {
+        await Click(SubmitButton);
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
         // Wait for confirmation message to appear
         await Page.WaitForSelectorAsync(ConfirmationMessage, new() { Timeout = 10000 });
     }

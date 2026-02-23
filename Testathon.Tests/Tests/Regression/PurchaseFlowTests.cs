@@ -56,7 +56,7 @@ public class PurchaseFlowTests : TestBase
         await _checkoutPage.FillShippingInfo("John", "Doe", "123 Test St", "Gauteng", "2000");
 
         // Submit order
-        await _checkoutPage.SubmitOrder();
+        await _checkoutPage.SubmitOrderAndWaitForConfirmation();
 
         // Verify order confirmation
         var isConfirmed = await _checkoutPage.IsOrderConfirmed();
@@ -121,7 +121,7 @@ public class PurchaseFlowTests : TestBase
         await _checkoutPage.FillShippingInfo("Jane", "Smith", "456 Test Ave", "Western Cape", "8000");
 
         // Submit order
-        await _checkoutPage.SubmitOrder();
+        await _checkoutPage.SubmitOrderAndWaitForConfirmation();
 
         // Verify order confirmation
         var isConfirmed = await _checkoutPage.IsOrderConfirmed();
