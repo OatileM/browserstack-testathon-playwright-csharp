@@ -139,6 +139,15 @@ public class HomePage : BasePage
         await Page.WaitForTimeoutAsync(300);
     }
 
+    public async Task CloseCart()
+    {
+        if (await IsCartOpen())
+        {
+            await Page.Locator(".float-cart__close-btn").ClickAsync();
+            await Page.WaitForTimeoutAsync(300);
+        }
+    }
+
     public async Task<string> GetCartQuantity()
     {
         try

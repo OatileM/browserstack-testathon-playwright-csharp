@@ -23,11 +23,11 @@ Testathon.Tests/
 └─ Tests/
    ├─ Smoke/               # 12 tests (8 core + 4 vendor filters)
    ├─ Negative/            # 9 tests (7 core + 2 checkout)
-   └─ Regression/          # 5 tests (4 core + 1 checkout)
+   └─ Regression/          # 7 tests (4 core + 3 checkout)
 ```
 
 ## Test Coverage
-- **26 automated tests** covering smoke, negative, and regression scenarios
+- **28 automated tests** covering smoke, negative, and regression scenarios
 - **Page Object Model** architecture for maintainability
 - **Strict assertions** that expose real bugs (4 bugs found)
 - **Authentication support** for protected pages
@@ -110,8 +110,8 @@ dotnet test --filter "FullyQualifiedName~TC_SM_01"
 - **NEW_TESTS_IMPLEMENTATION_SUMMARY.md**: Implementation summary for vendor and checkout tests
 
 ## Test Results
-- **Total**: 26 tests
-- **Passing**: 20 tests
+- **Total**: 28 tests
+- **Passing**: 22 tests
 - **Failing**: 4 tests (exposing real bugs)
 - **Skipped**: 2 tests (conditional execution when auth required)
 

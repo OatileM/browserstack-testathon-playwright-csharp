@@ -102,8 +102,8 @@ public class VendorFilterTests : TestBase
     }
 
     [Test]
-    [Description("TC-NEG-VEND-04: Vendor filter OnePlus behavior validation - STRICT assertion. May expose data/filter bug.")]
-    public async Task TC_NEG_VEND_04_OnePlus_Filter_Behavior()
+    [Description("TC-NEG-VEND-04: Vendor filter OnePlus MUST show ONLY OnePlus products - STRICT assertion")]
+    public async Task TC_NEG_VEND_04_OnePlus_Filter_Shows_Only_OnePlus_Products()
     {
         var initialCount = await _homePage.GetProductCardCount();
         

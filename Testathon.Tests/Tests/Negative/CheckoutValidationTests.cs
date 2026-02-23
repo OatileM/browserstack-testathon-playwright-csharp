@@ -9,12 +9,14 @@ namespace Testathon.Tests.Tests.Negative;
 public class CheckoutValidationTests : TestBase
 {
     private HomePage _homePage = null!;
+    private SignInPage _signInPage = null!;
     private CheckoutPage _checkoutPage = null!;
 
     [SetUp]
     public new async Task SetUp()
     {
         _homePage = new HomePage(Page);
+        _signInPage = new SignInPage(Page);
         _checkoutPage = new CheckoutPage(Page);
         await _homePage.Navigate();
     }
@@ -29,11 +31,11 @@ public class CheckoutValidationTests : TestBase
         // Navigate to checkout
         await _checkoutPage.Navigate();
         
-        // Gate: If redirected to signin, skip this test
+        // If redirected to signin, authenticate and retry
         if (await _checkoutPage.IsRedirectedToSignIn())
         {
-            Assert.Ignore("Checkout requires authentication. Test TC-NEG-AUTH-07 covers this scenario.");
-            return;
+            await _signInPage.Login("demouser", "testingisfun99");
+            await _checkoutPage.Navigate();
         }
         
         // Verify we're at checkout
