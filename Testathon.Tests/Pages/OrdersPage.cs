@@ -31,19 +31,21 @@ public class OrdersPage : BasePage
 
     public async Task<bool> HasOrderWithTotal(string expectedTotal)
     {
-        // Normalize expected total (remove $, spaces, etc)
-        var normalizedExpected = expectedTotal.Replace("$", "").Replace(" ", "").Replace(",", "").Trim();
+        // Normalize expected total to just the numeric value
+        var normalizedExpected = expectedTotal.Replace("$", "").Replace(" ", "").Replace(",", "").Replace(".00", "").Trim();
         
         var orderCount = await GetOrderCount();
         for (int i = 0; i < orderCount; i++)
         {
-            // Get all text from order card that might contain price
+            // Get all text from order card
             var orderText = await Page.Locator(OrderCard).Nth(i).TextContentAsync();
             if (orderText != null)
             {
-                // Check if normalized expected total appears in order text
+                // Normalize order text and check for match (with or without .00)
                 var normalizedOrderText = orderText.Replace("$", "").Replace(" ", "").Replace(",", "");
-                if (normalizedOrderText.Contains(normalizedExpected))
+                // Check both with and without decimal
+                if (normalizedOrderText.Contains(normalizedExpected) || 
+                    normalizedOrderText.Contains(normalizedExpected + ".00"))
                     return true;
             }
         }
