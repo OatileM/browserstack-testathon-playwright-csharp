@@ -16,9 +16,11 @@ public class CheckoutPage : BasePage
 
     // Order summary
     private const string OrderSummaryTotal = ".cart-priceItem--total .cart-priceItem-value";
+    private const string OrderSummaryItems = ".cart-item";
     
     // Confirmation
     private const string ConfirmationMessage = "#confirmation-message";
+    private const string OrderNumberElement = ".order-number, #order-number, [data-testid='order-number']";
 
     public CheckoutPage(IPage page) : base(page) { }
 
@@ -41,21 +43,57 @@ public class CheckoutPage : BasePage
         return Page.Url.Contains("signin") || Page.Url.Contains("?signin=true");
     }
 
+    public async Task FillShippingInfo(string firstName, string lastName, string address, string province, string postalCode)
+    {
+        await Fill(FirstNameInput, firstName);
+        await Fill(LastNameInput, lastName);
+        await Fill(AddressInput, address);
+        await Fill(ProvinceInput, province);
+        await Fill(PostalCodeInput, postalCode);
+    }
+
     public async Task<string> GetCheckoutTotal()
     {
         await WaitVisible(OrderSummaryTotal);
         return await GetText(OrderSummaryTotal);
     }
 
+    public async Task<int> GetOrderSummaryItemCount()
+    {
+        return await Page.Locator(OrderSummaryItems).CountAsync();
+    }
+
+    public async Task<string> GetOrderSummaryItemTitle(int index)
+    {
+        return await Page.Locator(OrderSummaryItems).Nth(index).Locator(".cart-item-title, .product-name").TextContentAsync() ?? "";
+    }
+
     public async Task SubmitOrder()
     {
         await Click(SubmitButton);
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+        // Wait for confirmation message to appear
+        await Page.WaitForSelectorAsync(ConfirmationMessage, new() { Timeout = 10000 });
     }
 
     public async Task<bool> IsOrderConfirmed()
     {
-        return await Page.Locator(ConfirmationMessage).IsVisibleAsync(new() { Timeout = 5000 }).ConfigureAwait(false);
+        return await Page.Locator(ConfirmationMessage).IsVisibleAsync(new() { Timeout = 2000 }).ConfigureAwait(false);
+    }
+
+    public async Task<string> GetOrderNumber()
+    {
+        try
+        {
+            // Order number is in text like "Your order number is 23."
+            var confirmationText = await Page.Locator(ConfirmationMessage).Locator("xpath=following-sibling::div").First.TextContentAsync(new() { Timeout = 5000 });
+            var match = System.Text.RegularExpressions.Regex.Match(confirmationText ?? "", @"order number is\s+(\d+)");
+            return match.Success ? match.Groups[1].Value : "";
+        }
+        catch
+        {
+            return "";
+        }
     }
 
     // Check if required field validation is shown (HTML5 validation or custom)

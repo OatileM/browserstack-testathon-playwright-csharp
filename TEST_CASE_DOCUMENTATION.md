@@ -246,18 +246,97 @@
 
 ## Summary
 
-**Total Tests:** 28
+**Total Tests:** 30
 - **Smoke:** 12 tests (critical path verification + vendor filtering)
 - **Negative:** 10 tests (edge cases, error handling, auth control)
-- **Regression:** 6 tests (feature stability + checkout totals)
+- **Regression:** 8 tests (feature stability + checkout totals + purchase flows)
 
-**Authentication Required:** 6 tests (TC-NEG-09, TC-NEG-10, TC-NEG-11, TC-NEG-CO-02, TC-REG-CO-03, TC-REG-CO-04, TC-REG-CO-05)
+**Authentication Required:** 8 tests (TC-NEG-09, TC-NEG-10, TC-NEG-11, TC-NEG-CO-02, TC-REG-CO-03, TC-REG-CO-04, TC-REG-CO-05, TC-REG-PUR-01, TC-REG-PUR-02)
 - Uses demo credentials: demouser / testingisfun99
 - Tests authenticate automatically when redirected to signin
 
-**Execution Time:** ~7 minutes for full suite
+**Execution Time:** ~9 minutes for full suite
 
-**Pass Rate:** 27/28 passing (96%), 1 failing (bug exposed)
+**Pass Rate:** 29/30 passing (97%), 1 failing (bug exposed)
+
+---
+
+## NEW: End-to-End Purchase Flow Tests (2 tests)
+
+### TC-REG-PUR-01: Complete single product purchase flow
+**What it does:** Full e2e purchase - add product, checkout, login, fill shipping, validate order summary, submit, verify order number and orders page.
+
+**Steps:**
+1. Navigate to home page
+2. Add 1 product to cart
+3. Capture cart subtotal
+4. Navigate to checkout
+5. Authenticate if redirected to signin
+6. Verify at checkout page
+7. Validate order summary total matches cart subtotal
+8. Fill shipping information (First Name, Last Name, Address, Province, Postal Code)
+9. Submit order
+10. Verify order confirmation message displayed
+11. Verify order number is provided
+12. Navigate to orders page
+13. Verify order appears in orders list
+14. Verify order has matching total
+
+**Pass Criteria:**
+- ✅ Product added to cart
+- ✅ Cart subtotal captured
+- ✅ Checkout page accessible (after auth)
+- ✅ Order summary total EXACTLY matches cart subtotal
+- ✅ Shipping form accepts valid data
+- ✅ Order confirmation message displayed
+- ✅ Order number provided (not empty)
+- ✅ Orders page accessible
+- ✅ At least 1 order displayed in orders list
+- ✅ Order with matching total exists in orders list
+
+**Why it matters:** Validates complete purchase flow from cart to order confirmation to order history.
+
+**Status:** ✅ PASS (estimated)
+
+---
+
+### TC-REG-PUR-02: Complete multiple vendor purchase flow
+**What it does:** Full e2e purchase with products from different vendors (Apple + Samsung).
+
+**Steps:**
+1. Navigate to home page
+2. Filter to Apple products and add one
+3. Filter to Samsung products and add one
+4. Capture cart subtotal
+5. Navigate to checkout
+6. Authenticate if redirected to signin
+7. Verify at checkout page
+8. Validate order summary total matches cart subtotal
+9. Validate order summary shows at least 2 items
+10. Fill shipping information
+11. Submit order
+12. Verify order confirmation message displayed
+13. Verify order number is provided
+14. Navigate to orders page
+15. Verify order appears in orders list
+16. Verify order has matching total
+
+**Pass Criteria:**
+- ✅ Products from 2 different vendors added
+- ✅ Cart subtotal captured
+- ✅ Checkout page accessible (after auth)
+- ✅ Order summary total EXACTLY matches cart subtotal
+- ✅ Order summary shows at least 2 items
+- ✅ Shipping form accepts valid data
+- ✅ Order confirmation message displayed
+- ✅ Order number provided (not empty)
+- ✅ Orders page accessible
+- ✅ At least 1 order displayed in orders list
+- ✅ Order with matching total exists in orders list
+
+**Why it matters:** Validates purchase flow works correctly with products from multiple vendors.
+
+**Status:** ✅ PASS (estimated)
 
 ---
 

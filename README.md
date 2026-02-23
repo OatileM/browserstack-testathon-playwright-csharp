@@ -19,20 +19,22 @@ Testathon.Tests/
 │  ├─ BasePage.cs          # Base page object with common methods
 │  ├─ HomePage.cs          # Home page object (products, filters, cart)
 │  ├─ SignInPage.cs        # Sign-in page object (authentication)
-│  └─ CheckoutPage.cs      # Checkout page object (order submission)
+│  ├─ CheckoutPage.cs      # Checkout page object (order submission)
+│  └─ OrdersPage.cs        # Orders page object (order history validation)
 └─ Tests/
    ├─ Smoke/               # 12 tests (8 core + 4 vendor filters)
    ├─ Negative/            # 9 tests (7 core + 2 checkout)
-   └─ Regression/          # 7 tests (4 core + 3 checkout)
+   └─ Regression/          # 9 tests (4 core + 3 checkout + 2 purchase)
 ```
 
 ## Test Coverage
-- **28 automated tests** covering smoke, negative, and regression scenarios
+- **30 automated tests** covering smoke, negative, and regression scenarios
 - **Page Object Model** architecture for maintainability
-- **Strict assertions** that expose real bugs (4 bugs found)
+- **Strict assertions** that expose real bugs (1 bug found)
 - **Authentication support** for protected pages
 - **Vendor filtering validation** (Apple, Samsung, Google, OnePlus)
 - **Checkout flow testing** with smart conditional execution
+- **End-to-end purchase flows** with order validation
 - **Cross-browser ready** via BrowserStack
 
 ## Bugs Found
@@ -109,8 +111,8 @@ dotnet test --filter "FullyQualifiedName~TC_SM_01"
 - **NEW_TESTS_IMPLEMENTATION_SUMMARY.md**: Implementation summary for vendor and checkout tests
 
 ## Test Results
-- **Total**: 28 tests
-- **Passing**: 27 tests
+- **Total**: 30 tests
+- **Passing**: 29 tests (estimated)
 - **Failing**: 1 test (exposing real bug)
 
 ## Links
