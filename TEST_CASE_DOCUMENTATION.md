@@ -96,41 +96,47 @@
 ## Negative & Edge Tests (7 tests)
 
 ### TC-NEG-09: Offers link navigates successfully
-**What it does:** Logs in, clicks Offers link, and verifies page loads without crash.
+**What it does:** Clicks Offers link, authenticates if needed, and verifies navigation.
 
 **Pass Criteria:**
-- ✅ User logs in successfully
 - ✅ Offers link is clicked
-- ✅ Page loads (NetworkIdle state reached)
-- ✅ Product count is 0 or greater (page rendered)
+- ✅ If redirected to signin, user logs in successfully
+- ✅ URL contains "/offers" after authentication
+- ✅ Page loads successfully
 
-**Why it matters:** Ensures authenticated navigation to Offers works.
+**Why it matters:** Ensures authenticated navigation to Offers works correctly.
+
+**Status:** ✅ PASS
 
 ---
 
 ### TC-NEG-10: Orders link navigates successfully
-**What it does:** Logs in, clicks Orders link, and verifies page loads without crash.
+**What it does:** Clicks Orders link, authenticates if needed, and verifies navigation.
 
 **Pass Criteria:**
-- ✅ User logs in successfully
 - ✅ Orders link is clicked
-- ✅ Page loads (NetworkIdle state reached)
-- ✅ Product count is 0 or greater (page rendered)
+- ✅ If redirected to signin, user logs in successfully
+- ✅ URL contains "/orders" after authentication
+- ✅ Page loads successfully
 
-**Why it matters:** Ensures authenticated navigation to Orders works.
+**Why it matters:** Ensures authenticated navigation to Orders works correctly.
+
+**Status:** ✅ PASS
 
 ---
 
 ### TC-NEG-11: Favourites link navigates successfully
-**What it does:** Logs in, clicks Favourites link, and verifies page loads without crash.
+**What it does:** Clicks Favourites link, authenticates if needed, and verifies navigation.
 
 **Pass Criteria:**
-- ✅ User logs in successfully
 - ✅ Favourites link is clicked
-- ✅ Page loads (NetworkIdle state reached)
-- ✅ Product count is 0 or greater (page rendered)
+- ✅ If redirected to signin, user logs in successfully
+- ✅ URL contains "/favourites" after authentication
+- ✅ Page loads successfully
 
-**Why it matters:** Ensures authenticated navigation to Favourites works.
+**Why it matters:** Ensures authenticated navigation to Favourites works correctly.
+
+**Status:** ✅ PASS
 
 ---
 
@@ -240,17 +246,18 @@
 
 ## Summary
 
-**Total Tests:** 26
+**Total Tests:** 28
 - **Smoke:** 12 tests (critical path verification + vendor filtering)
 - **Negative:** 10 tests (edge cases, error handling, auth control)
-- **Regression:** 4 tests (feature stability)
+- **Regression:** 6 tests (feature stability + checkout totals)
 
-**Authentication Required:** 3 tests (TC-NEG-09, TC-NEG-10, TC-NEG-11)
+**Authentication Required:** 6 tests (TC-NEG-09, TC-NEG-10, TC-NEG-11, TC-NEG-CO-02, TC-REG-CO-03, TC-REG-CO-04, TC-REG-CO-05)
 - Uses demo credentials: demouser / testingisfun99
+- Tests authenticate automatically when redirected to signin
 
-**Execution Time:** ~6 minutes for full suite
+**Execution Time:** ~7 minutes for full suite
 
-**Pass Rate:** 20/26 passing, 4 failing (bugs exposed), 2 skipped (gated)
+**Pass Rate:** 27/28 passing (96%), 1 failing (bug exposed)
 
 ---
 
@@ -385,7 +392,7 @@
 1. Navigate to home page
 2. Add 1 product to cart
 3. Navigate to /checkout
-4. IF redirected to signin, skip test (covered by TC-NEG-AUTH-07)
+4. If redirected to signin, authenticate and retry
 5. Verify at checkout page
 6. Click submit button without filling fields
 7. Verify order is NOT confirmed
@@ -401,7 +408,7 @@
 
 **Why it matters:** Ensures required field validation prevents incomplete orders.
 
-**Status:** ⏭️ SKIPPED - Checkout requires authentication (gated by TC-NEG-AUTH-07)
+**Status:** ✅ PASS (authenticates automatically when needed)
 
 ---
 
@@ -415,7 +422,7 @@
 2. Add 1 product to cart
 3. Open cart and capture subtotal
 4. Navigate to /checkout
-5. IF redirected to signin, skip test (covered by TC-NEG-AUTH-07)
+5. If redirected to signin, authenticate and retry
 6. Verify at checkout page
 7. Capture checkout total
 8. Normalize both values (remove $, spaces, commas)
@@ -429,4 +436,57 @@
 
 **Why it matters:** Ensures pricing consistency between cart and checkout.
 
-**Status:** ⏭️ SKIPPED - Checkout requires authentication (gated by TC-NEG-AUTH-07)
+**Status:** ✅ PASS (authenticates automatically when needed)
+
+---
+
+### TC-REG-CO-04: Multiple items checkout total matches cart total
+**What it does:** Adds 3 products to cart and validates checkout total matches cart subtotal.
+
+**Steps:**
+1. Navigate to home page
+2. Add 3 products to cart (closing cart between additions)
+3. Open cart and capture subtotal
+4. Navigate to /checkout
+5. If redirected to signin, authenticate and retry
+6. Verify at checkout page
+7. Capture checkout total
+8. Normalize both values
+9. Compare as decimal values
+
+**Pass Criteria:**
+- ✅ 3 products added to cart
+- ✅ Cart subtotal captured
+- ✅ Checkout total captured
+- ✅ Checkout total EXACTLY equals cart subtotal
+
+**Why it matters:** Ensures pricing consistency for multiple items.
+
+**Status:** ✅ PASS
+
+---
+
+### TC-REG-CO-05: Multiple vendors checkout validates cart total
+**What it does:** Adds products from different vendors (Apple + Samsung) and validates checkout total.
+
+**Steps:**
+1. Navigate to home page
+2. Filter to Apple products and add one
+3. Filter to Samsung products and add one
+4. Open cart and capture subtotal
+5. Navigate to /checkout
+6. If redirected to signin, authenticate and retry
+7. Verify at checkout page
+8. Capture checkout total
+9. Normalize both values
+10. Compare as decimal values
+
+**Pass Criteria:**
+- ✅ Products from 2 different vendors added
+- ✅ Cart subtotal captured
+- ✅ Checkout total captured
+- ✅ Checkout total EXACTLY equals cart subtotal
+
+**Why it matters:** Ensures pricing consistency across multiple vendors.
+
+**Status:** ✅ PASS

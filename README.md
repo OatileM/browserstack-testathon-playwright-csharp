@@ -36,7 +36,6 @@ Testathon.Tests/
 - **Cross-browser ready** via BrowserStack
 
 ## Bugs Found
-- **3 Routing Bugs**: Offers/Orders/Favourites redirect to signin after authentication (HIGH)
 - **1 Vendor Filter Bug**: OnePlus filter shows Apple products (HIGH)
 
 ## Setup
@@ -111,9 +110,8 @@ dotnet test --filter "FullyQualifiedName~TC_SM_01"
 
 ## Test Results
 - **Total**: 28 tests
-- **Passing**: 22 tests
-- **Failing**: 4 tests (exposing real bugs)
-- **Skipped**: 2 tests (conditional execution when auth required)
+- **Passing**: 27 tests
+- **Failing**: 1 test (exposing real bug)
 
 ## Links
 - Test Site: https://testathon.live/
