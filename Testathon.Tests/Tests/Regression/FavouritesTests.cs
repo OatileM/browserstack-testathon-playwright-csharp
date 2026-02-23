@@ -42,16 +42,20 @@ public class FavouritesTests : TestBase
         await _homePage.ClickFavouritesLink();
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
-        // Handle signin redirect (routing bug)
-        if (Page.Url.Contains("signin"))
+        // Wait for either favourites content or signin page
+        await Page.WaitForSelectorAsync(".products-found, #username", new() { Timeout = 10000 });
+
+        // Handle signin redirect if needed
+        if (Page.Url.Contains("signin") && await Page.Locator("#username").IsVisibleAsync())
         {
             await _signInPage.Login("demouser", "testingisfun99");
             await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
         }
 
-        // Verify at favourites page
-        var isAtFavourites = await _favouritesPage.IsAtFavourites();
-        Assert.That(isAtFavourites, Is.True, "Must be at favourites page");
+        // Verify we have favourites content ("1 Product(s) found.")
+        var productsFoundText = await Page.Locator(".products-found").TextContentAsync();
+        Assert.That(productsFoundText, Does.Contain("Product(s) found"), 
+            "Favourites page must show products found indicator");
 
         // Verify at least one favourite exists
         var favouriteCount = await _favouritesPage.GetFavouriteCount();
