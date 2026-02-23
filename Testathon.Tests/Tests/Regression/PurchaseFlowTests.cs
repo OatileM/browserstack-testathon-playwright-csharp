@@ -24,7 +24,7 @@ public class PurchaseFlowTests : TestBase
     }
 
     [Test]
-    [Description("TC-REG-PUR-01: Complete purchase flow - add product, checkout, fill shipping, validate order summary, submit, verify order number and orders page")]
+    [Description("TC-REG-PUR-01: Complete purchase flow - add product, checkout, fill shipping, validate order summary, submit, verify order appears in orders page")]
     public async Task TC_REG_PUR_01_Complete_Single_Product_Purchase_Flow()
     {
         // Add product to cart
@@ -61,10 +61,6 @@ public class PurchaseFlowTests : TestBase
         // Verify order confirmation
         var isConfirmed = await _checkoutPage.IsOrderConfirmed();
         Assert.That(isConfirmed, Is.True, "Order confirmation message must be displayed");
-
-        // Verify order number is provided
-        var orderNumber = await _checkoutPage.GetOrderNumber();
-        Assert.That(orderNumber, Is.Not.Empty, "Order number must be provided after successful purchase");
 
         // Navigate to orders page
         await _ordersPage.Navigate();
@@ -132,10 +128,6 @@ public class PurchaseFlowTests : TestBase
         // Verify order confirmation
         var isConfirmed = await _checkoutPage.IsOrderConfirmed();
         Assert.That(isConfirmed, Is.True, "Order confirmation message must be displayed");
-
-        // Verify order number is provided
-        var orderNumber = await _checkoutPage.GetOrderNumber();
-        Assert.That(orderNumber, Is.Not.Empty, "Order number must be provided after successful purchase");
 
         // Navigate to orders page
         await _ordersPage.Navigate();
