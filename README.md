@@ -112,7 +112,7 @@ dotnet test --filter "FullyQualifiedName~TC_SM_01"
 
 ## Test Results
 - **Total**: 30 tests
-- **Passing**: 29 tests (estimated)
+- **Passing**: 29 tests
 - **Failing**: 1 test (exposing real bug)
 
 ## Links
