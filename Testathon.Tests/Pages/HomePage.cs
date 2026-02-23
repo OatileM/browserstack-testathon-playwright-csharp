@@ -28,7 +28,7 @@ public class HomePage : BasePage
     private const string ContinueShoppingButton = "text=Continue Shopping";
 
     // Favourites
-    private const string FavouriteButton = ".shelf-item__fav";
+    private const string FavouriteButton = ".shelf-item svg.Icon, .shelf-item button[aria-label*='favorite'], .shelf-item button[aria-label*='favourite']";
 
     public HomePage(IPage page) : base(page) { }
 
@@ -189,7 +189,8 @@ public class HomePage : BasePage
     // Favourites methods
     public async Task ClickFavouriteByIndex(int index)
     {
-        await Page.Locator(FavouriteButton).Nth(index).ClickAsync();
+        var productCard = Page.Locator(ProductCards).Nth(index);
+        await productCard.Locator("svg.Icon").First.ClickAsync();
         await Page.WaitForTimeoutAsync(300);
     }
 
@@ -197,3 +198,4 @@ public class HomePage : BasePage
     {
         return await Page.Locator(ProductCards).Nth(index).Locator(".shelf-item__title").TextContentAsync() ?? "";
     }
+}
