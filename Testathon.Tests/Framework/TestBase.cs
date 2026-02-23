@@ -19,16 +19,14 @@ public abstract class TestBase
 
         PW = await Playwright.CreateAsync();
 
-        // Check if credentials are actually set (not null, empty, or whitespace)
         if (!string.IsNullOrWhiteSpace(bsUsername) && !string.IsNullOrWhiteSpace(bsAccessKey))
         {
+            Console.WriteLine($"Connecting to BrowserStack Automate with device: {bsDevice}");
+            
             var caps = GetBrowserStackCapabilities(bsDevice, bsUsername, bsAccessKey);
-            var capsJson = System.Text.Json.JsonSerializer.Serialize(caps);
-            var cdpUrl = $"wss://cdp.browserstack.com/playwright?caps={capsJson}";
+            var wsEndpoint = $"wss://cdp.browserstack.com/playwright?caps={System.Text.Json.JsonSerializer.Serialize(caps)}";
             
-            Console.WriteLine($"Connecting to BrowserStack with device: {bsDevice}");
-            
-            Browser = await PW.Chromium.ConnectOverCDPAsync(cdpUrl);
+            Browser = await PW.Chromium.ConnectOverCDPAsync(wsEndpoint);
             Context = Browser.Contexts[0];
             Page = Context.Pages[0];
         }
@@ -48,28 +46,33 @@ public abstract class TestBase
             { "browserstack.username", username },
             { "browserstack.accessKey", accessKey },
             { "name", TestContext.CurrentContext.Test.Name },
-            { "build", "testathon-playwright-csharp" }
+            { "build", "testathon-playwright-csharp" },
+            { "project", "BrowserStack Testathon" }
         };
 
         switch (device)
         {
             case "chrome-win11":
                 caps["browser"] = "chrome";
+                caps["browser_version"] = "latest";
                 caps["os"] = "Windows";
                 caps["os_version"] = "11";
                 break;
             case "chrome-mac":
                 caps["browser"] = "chrome";
+                caps["browser_version"] = "latest";
                 caps["os"] = "osx";
                 caps["os_version"] = "Sonoma";
                 break;
             case "edge-win11":
                 caps["browser"] = "edge";
+                caps["browser_version"] = "latest";
                 caps["os"] = "Windows";
                 caps["os_version"] = "11";
                 break;
             default:
                 caps["browser"] = "chrome";
+                caps["browser_version"] = "latest";
                 caps["os"] = "Windows";
                 caps["os_version"] = "11";
                 break;
