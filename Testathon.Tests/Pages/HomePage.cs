@@ -27,6 +27,9 @@ public class HomePage : BasePage
     private const string EmptyCartMessage = "p.shelf-empty";
     private const string ContinueShoppingButton = "text=Continue Shopping";
 
+    // Favourites
+    private const string FavouriteButton = ".shelf-item__fav";
+
     public HomePage(IPage page) : base(page) { }
 
     public async Task Navigate()
@@ -182,4 +185,15 @@ public class HomePage : BasePage
     {
         return await Page.Locator(".float-cart--open").IsVisibleAsync();
     }
-}
+
+    // Favourites methods
+    public async Task ClickFavouriteByIndex(int index)
+    {
+        await Page.Locator(FavouriteButton).Nth(index).ClickAsync();
+        await Page.WaitForTimeoutAsync(300);
+    }
+
+    public async Task<string> GetProductTitleByIndex(int index)
+    {
+        return await Page.Locator(ProductCards).Nth(index).Locator(".shelf-item__title").TextContentAsync() ?? "";
+    }
